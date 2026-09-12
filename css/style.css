@@ -1,0 +1,5 @@
+body {     font-family: Arial, sans-serif;     background-color: #588ad4;     display: flex;     justify-content: center;     padding-top: 50px; 
+} .container {     background-color: rgb(220, 224, 226);     width: 400px;     padding: 30px;     border-radius: 15px;     box-shadow: 0 4px 8px rgba(0,0,0,0.1);     text-align: center; 
+} .avatar {     width: 150px;     height: 150px;     border-radius: 50%;     object-fit: cover;     border: 3px solid #007bff; 
+} .links a {     display: inline-block;     margin: 10px;     padding: 10px 20px;     background-color: #007bff;     color: white;     text-decoration: none;     border-radius: 5px; } .links a:hover {     background-color: #0056b3; 
+} 
