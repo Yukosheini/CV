@@ -1,65 +1,226 @@
-<!DOCTYPE html> 
-<html lang="vi"> 
-    <style>
-     body {
-            background-color: #1358a8;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        
-        header, main, footer {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 15px;
-            background-color: rgba(209, 99, 99, 0.6);
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        h1 {
-            color: #008B8B;
-            margin: 0;
-        }
-        
-        /* Căn giữa ảnh cho đẹp */
-        picture {
-            display: block;
-            text-align: center;
-            margin: 15px 0;
-        }
-        
-        picture img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-     </style>
-     <link rel="stylesheet" href="css/style.css">
-<head> 
-     <link rel="icon" href="assets/images.jfif" >
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Trang giới thiệu bản thân - Bài thực hành FIT4014">
     <meta name="author" content="Đức">
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">     <title>Trang cá nhân của tôi</title> 
-    <link rel="stylesheet" href="css/style.css"> 
-</head> 
-<body> 
-    <div class="container"> 
-        <!-- Lưu một ảnh vào thư mục assets và đổi tên tệp tương ứng dưới đây -->         <img src="assets/images/avatar.jpg" alt="Ảnh đại diện" class="avatar"> 
-         
-        <h1>Xin chào, mình là Bùi Trung Đức! 👋</h1>
+    
+    <link rel="icon" href="assets/images.jfif" type="image/x-icon">
+    
+    <title>Trang cá nhân của Bùi Trung Đức</title>
 
-        <h2>Sinh viên năm nhất ngành CNTT</h2> 
-         
-        <p>Mình vừa mới bắt đầu học lập trình và đây là trang web đầu tiên của mình. Mình rất hào hứng khám phá thế giới công nghệ!</p> 
-         
-        <div class="links"> 
-            <a href="https://facebook.com/@yukosheini" target="_blank">Facebook</a> 
-            <a href="https://github.com/yukosheini" target="_blank">GitHub</a> 
-        </div> 
-    </div> 
-</body> 
-</html> 
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        /* Thanh điều hướng */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        nav .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        nav .nav-links a:hover {
+            background-color: #667eea;
+            color: white;
+        }
+
+        nav .nav-links a.active {
+            background-color: #667eea;
+            color: white;
+        }
+
+        /* Khung chứa nội dung chính */
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin-top: 80px; /* Khoảng cách từ nav */
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: normal;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-fb {
+            background-color: #1877f2;
+            color: white;
+            box-shadow: 0 4px 6px rgba(24, 119, 242, 0.3);
+        }
+
+        .btn-fb:hover {
+            background-color: #166fe5;
+            transform: scale(1.05);
+        }
+
+        .btn-gh {
+            background-color: #333;
+            color: white;
+            box-shadow: 0 4px 6px rgba(51, 51, 51, 0.3);
+        }
+
+        .btn-gh:hover {
+            background-color: #000;
+            transform: scale(1.05);
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            nav .nav-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .container {
+                margin-top: 120px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Thanh điều hướng -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">🏠 Trang chủ</a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Trang cá nhân</a>
+                <a href="hello.html">Sở thích & Thành tựu</a>
+                <a href="contact.html">Liên hệ</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <img src="assets/images/avatar.jpg" alt="Ảnh đại diện Bùi Trung Đức" class="avatar" onerror="this.src='https://via.placeholder.com/150'">
+        
+        <h1>Xin chào, mình là Bùi Trung Đức! 👋</h1>
+        
+        <h2>Sinh viên năm nhất ngành CNTT</h2>
+        
+        <p>
+            Mình vừa mới bắt đầu học lập trình và đây là trang web đầu tiên của mình. 
+            Mình rất hào hứng khám phá thế giới công nghệ và xây dựng các sản phẩm số.
+        </p>
+        
+        <div class="links">
+            <a href="https://facebook.com/@yukosheini" target="_blank" class="btn btn-fb">Facebook</a>
+            <a href="https://github.com/yukosheini" target="_blank" class="btn btn-gh">GitHub</a>
+        </div>
+
+        <footer>
+            2026 Bùi Trung Đức - FIT4014
+        </footer>
+    </div>
+
+</body>
+</html>
