@@ -17,14 +17,34 @@
             padding: 0;
         }
 
+        /* --- BACKGROUND ĐỘNG --- */
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* Tạo gradient với 3 màu và kích thước lớn hơn màn hình */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            
+            /* Hiệu ứng chuyển động */
+            animation: gradientBG 15s ease infinite;
+            
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #333;
+        }
+
+        /* Định nghĩa chuyển động cho background */
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Thanh điều hướng */
@@ -185,6 +205,7 @@
             }
         }
     </style>
+    </style>
 </head>
 <body>
 
@@ -195,6 +216,7 @@
             <div class="nav-links">
                 <a href="index.html" class="active">Trang cá nhân</a>
                 <a href="hello.html">Sở thích & Thành tựu</a>
+                <a href="schedule.html">Thời Khóa Biểu</a>
                 <a href="contact.html">Liên hệ</a>
             </div>
         </div>
