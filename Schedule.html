@@ -6,6 +6,7 @@
     <meta name="description" content="Thời khóa biểu - Bài thực hành FIT4014">
     <meta name="author" content="Đức">
     
+    <!-- Favicon dự phòng nếu ảnh lỗi -->
     <link rel="icon" href="assets/images.jfif" type="image/x-icon" onerror="this.href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>'">
     
     <title>Thời Khóa Biểu - Bùi Trung Đức</title>
@@ -19,7 +20,6 @@
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             --glass-border: 1px solid rgba(255, 255, 255, 0.5);
             --highlight-bg: #fff3cd;
-            --highlight-border: #ffeeba;
             --active-pulse: rgba(255, 193, 7, 0.5);
         }
 
@@ -30,7 +30,6 @@
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             --glass-border: 1px solid rgba(255, 255, 255, 0.1);
             --highlight-bg: #3d3d2a;
-            --highlight-border: #5c5c3d;
             --active-pulse: rgba(255, 193, 7, 0.2);
         }
 
@@ -38,7 +37,11 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            cursor: none; /* Custom cursor */
+            /* Chỉ ẩn con trỏ mặc định trên desktop để tránh lỗi trên mobile */
+        }
+
+        @media (min-width: 769px) {
+            * { cursor: none; }
         }
 
         /* --- CUSTOM CURSOR --- */
@@ -46,7 +49,13 @@
             position: fixed; top: 0; left: 0;
             transform: translate(-50%, -50%);
             border-radius: 50%; z-index: 9999; pointer-events: none;
+            display: none; /* Mặc định ẩn, JS sẽ bật lên nếu là desktop */
         }
+        
+        @media (min-width: 769px) {
+            .cursor-dot, .cursor-outline { display: block; }
+        }
+
         .cursor-dot { width: 8px; height: 8px; background-color: var(--primary-color); }
         .cursor-outline {
             width: 40px; height: 40px; border: 2px solid var(--primary-color);
@@ -56,7 +65,7 @@
             width: 60px; height: 60px; background-color: rgba(102, 126, 234, 0.1); border-color: transparent;
         }
 
-        /* --- BACKGROUND --- */
+        /* --- BACKGROUND & BODY --- */
         body {
             background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
             background-size: 400% 400%;
@@ -64,9 +73,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Sửa lại để không bị lỗi cuộn */
+            /* Sử dụng block thay vì flex để tránh xung đột cuộn trang */
+            display: block; 
             padding-top: 100px;
             padding-bottom: 40px;
         }
@@ -111,7 +119,7 @@
         
         .theme-toggle {
             background: none; border: none; color: white; font-size: 1.2rem;
-            cursor: pointer; padding: 5px; transition: transform 0.3s;
+            padding: 5px; transition: transform 0.3s;
         }
         .theme-toggle:hover { transform: rotate(180deg); }
 
@@ -122,6 +130,7 @@
             border: var(--glass-border);
             width: 95%;
             max-width: 1100px;
+            margin: 0 auto; /* Căn giữa chuẩn hơn */
             padding: 40px;
             border-radius: 20px;
             box-shadow: var(--shadow);
@@ -129,8 +138,6 @@
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s ease, transform 0.8s ease;
-            
-            /* 3D settings */
             transform-style: preserve-3d;
         }
         
@@ -161,16 +168,14 @@
             font-size: 14px;
         }
         
-        #countdown {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
+        #countdown { color: var(--primary-color); font-weight: bold; }
 
         /* Table Styles */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            -webkit-overflow-scrolling: touch; /* Mượt hơn trên iOS */
         }
 
         table {
@@ -194,7 +199,6 @@
             vertical-align: middle;
         }
 
-        /* Cột Tiết học */
         td:first-child {
             font-weight: bold;
             background-color: rgba(102, 126, 234, 0.1);
@@ -204,19 +208,11 @@
         }
 
         tbody tr:nth-of-type(even) { background-color: rgba(0,0,0,0.02); }
-        
-        /* Hover effect for rows */
-        tbody tr:hover {
-            background-color: rgba(102, 126, 234, 0.05);
-            transition: background-color 0.2s;
-        }
+        tbody tr:hover { background-color: rgba(102, 126, 234, 0.05); transition: background-color 0.2s; }
 
         .subject-code {
-            display: block;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            font-style: italic;
+            display: block; font-size: 11px; color: var(--text-muted);
+            margin-top: 4px; font-style: italic;
         }
 
         /* Active Class Highlighting */
@@ -230,14 +226,10 @@
         .current-class::after {
             content: 'ĐANG HỌC';
             position: absolute;
-            top: -10px;
-            right: -10px;
-            background: var(--primary-color);
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
+            top: -10px; right: -10px;
+            background: var(--primary-color); color: white;
+            font-size: 10px; padding: 2px 6px;
+            border-radius: 4px; font-weight: bold;
         }
 
         @keyframes pulseBorder {
@@ -250,14 +242,13 @@
             margin-top: 30px;
             font-size: 12px;
             color: var(--text-muted);
+            text-align: center;
         }
 
         @media (max-width: 768px) {
             nav .nav-container { flex-direction: column; gap: 10px; }
             .container-wide { width: 98%; padding: 20px; }
             th, td { padding: 8px 5px; font-size: 12px; }
-            .cursor-dot, .cursor-outline { display: none; }
-            * { cursor: auto; }
         }
     </style>
 </head>
@@ -304,8 +295,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Cấu trúc dữ liệu: data-start và data-end dùng 24h format -->
-                    
                     <!-- Tiết 1: 07:00 - 08:00 -->
                     <tr>
                         <td>Tiết 1<br><span class="subject-code">07:00 - 08:00</span></td>
@@ -372,21 +361,27 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 1. CUSTOM CURSOR & UI UTILS ---
+            // --- 1. SAFE CUSTOM CURSOR LOGIC ---
             const cursorDot = document.querySelector('.cursor-dot');
             const cursorOutline = document.querySelector('.cursor-outline');
             const hoverTargets = document.querySelectorAll('.hover-target');
 
-            window.addEventListener('mousemove', (e) => {
-                cursorDot.style.left = `${e.clientX}px`;
-                cursorDot.style.top = `${e.clientY}px`;
-                cursorOutline.animate({ left: `${e.clientX}px`, top: `${e.clientY}px` }, { duration: 500, fill: "forwards" });
-            });
+            // Chỉ kích hoạt JS cursor nếu là thiết bị có chuột (Desktop)
+            if (window.matchMedia("(pointer: fine)").matches) {
+                window.addEventListener('mousemove', (e) => {
+                    // Dùng requestAnimationFrame để tối ưu hiệu năng, tránh lag
+                    requestAnimationFrame(() => {
+                        cursorDot.style.left = `${e.clientX}px`;
+                        cursorDot.style.top = `${e.clientY}px`;
+                        cursorOutline.animate({ left: `${e.clientX}px`, top: `${e.clientY}px` }, { duration: 500, fill: "forwards" });
+                    });
+                });
 
-            hoverTargets.forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-            });
+                hoverTargets.forEach(el => {
+                    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+                });
+            }
 
             // Entrance Animation
             setTimeout(() => document.getElementById('tilt-card').classList.add('visible'), 100);
@@ -401,36 +396,38 @@
                 lastScrollTop = scrollTop;
             });
 
-            // Dark Mode
+            // Dark Mode Logic (An toàn với LocalStorage)
             const themeBtn = document.getElementById('theme-btn');
             const body = document.body;
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme) {
-                body.setAttribute('data-theme', currentTheme);
-                themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-            }
+            
+            try {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme) {
+                    body.setAttribute('data-theme', currentTheme);
+                    themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+                }
+            } catch (e) { console.log('LocalStorage not available'); }
+
             themeBtn.addEventListener('click', () => {
                 const isDark = body.getAttribute('data-theme') === 'dark';
                 const newTheme = isDark ? 'light' : 'dark';
                 body.setAttribute('data-theme', newTheme);
                 themeBtn.textContent = isDark ? '🌙' : '☀️';
-                localStorage.setItem('theme', newTheme);
+                try { localStorage.setItem('theme', newTheme); } catch (e) {}
             });
 
 
             // --- 2. SMART SCHEDULE LOGIC ---
-            
             function checkSchedule() {
                 const now = new Date();
-                const day = now.getDay(); // 0=CN, 1=T2... 7=CN (JS getDay trả về 0-6)
-                // Chuyển đổi JS Day (0-6) sang HTML Data Day (2-7, CN=1 hoặc 8 tùy quy ước, ở đây T2=2)
-                // HTML: T2=2, T3=3... T7=7. JS: T2=1, T3=2... T7=6, CN=0.
+                const day = now.getDay(); // 0=CN, 1=T2...
                 
-                let htmlDay = day === 0 ? 8 : day + 1; // Convert JS day to match HTML data-day
+                // Convert JS day (0-6) to HTML data-day (T2=2... T7=7, CN=8)
+                let htmlDay = day === 0 ? 8 : day + 1; 
                 
                 const currentHour = now.getHours();
                 const currentMinute = now.getMinutes();
-                const currentTimeVal = currentHour * 60 + currentMinute; // Phút từ đầu ngày
+                const currentTimeVal = currentHour * 60 + currentMinute;
 
                 let activeClassFound = false;
                 let nextClassTime = null;
@@ -439,7 +436,6 @@
                 // Reset highlights
                 document.querySelectorAll('td').forEach(td => td.classList.remove('current-class'));
 
-                // Duyệt qua tất cả các ô có chứa thông tin lịch học
                 const cells = document.querySelectorAll('td[data-day]');
                 
                 cells.forEach(cell => {
@@ -454,20 +450,19 @@
                         const startTimeVal = startH * 60 + startM;
                         const endTimeVal = endH * 60 + endM;
 
-                        // Kiểm tra xem có đang trong giờ học không
+                        // Check đang học
                         if (currentTimeVal >= startTimeVal && currentTimeVal < endTimeVal) {
                             cell.classList.add('current-class');
                             activeClassFound = true;
                             
-                            // Cập nhật trạng thái
-                            document.getElementById('status-text').innerText = "🔴 Đang học: " + (cell.innerText.split('\n')[0] || "Tiết học");
+                            const subjectName = cell.innerText.split('\n')[0];
+                            document.getElementById('status-text').innerText = "🔴 Đang học: " + subjectName;
                             
-                            // Tính thời gian còn lại của tiết
                             const remaining = endTimeVal - currentTimeVal;
                             document.getElementById('countdown').innerText = `(Còn ${remaining} phút)`;
                         }
 
-                        // Tìm tiết tiếp theo gần nhất
+                        // Tìm tiết tiếp theo
                         if (startTimeVal > currentTimeVal) {
                             const diff = startTimeVal - currentTimeVal;
                             if (diff < minDiff) {
@@ -478,7 +473,6 @@
                     }
                 });
 
-                // Nếu không có tiết nào đang học
                 if (!activeClassFound) {
                     if (nextClassTime) {
                         const diff = nextClassTime - currentTimeVal;
@@ -491,22 +485,30 @@
                 }
             }
 
-            // Chạy ngay lập tức và cập nhật mỗi phút
             checkSchedule();
-            setInterval(checkSchedule, 60000); // 60 giây cập nhật 1 lần
+            setInterval(checkSchedule, 60000);
 
 
-            // --- 3. 3D TILT EFFECT ---
+            // --- 3. OPTIMIZED 3D TILT EFFECT ---
             if (window.matchMedia("(min-width: 769px)").matches) {
                 const card = document.getElementById('tilt-card');
+                let ticking = false;
+
                 card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const xRotation = -((y - rect.height / 2) / 30); 
-                    const yRotation = (x - rect.width / 2) / 30;
-                    card.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            const rect = card.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            const xRotation = -((y - rect.height / 2) / 30); 
+                            const yRotation = (x - rect.width / 2) / 30;
+                            card.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
                 });
+                
                 card.addEventListener('mouseleave', () => {
                     card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
                 });
