@@ -6,57 +6,112 @@
     <meta name="description" content="Trang giới thiệu bản thân - Bài thực hành FIT4014">
     <meta name="author" content="Đức">
     
-    <link rel="icon" href="assets/images.jfif" type="image/x-icon">
+    <!-- Favicon placeholder nếu ảnh lỗi -->
+    <link rel="icon" href="assets/images.jfif" type="image/x-icon" onerror="this.href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>'">
     
     <title>Trang cá nhân của Bùi Trung Đức</title>
 
     <style>
+        :root {
+            --primary-color: #667eea;
+            --bg-light: rgba(255, 255, 255, 0.85);
+            --text-dark: #2c3e50;
+            --text-gray: #555;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Dark Mode Variables */
+        [data-theme="dark"] {
+            --bg-light: rgba(30, 30, 40, 0.85);
+            --text-dark: #ecf0f1;
+            --text-gray: #bdc3c7;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            cursor: none; /* Ẩn con trỏ mặc định để dùng custom cursor */
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary-color);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        body:hover .cursor-outline {
+            opacity: 1;
+        }
+
+        /* Hover state for cursor */
+        body.hovering .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: transparent;
         }
 
         /* --- BACKGROUND ĐỘNG --- */
         body {
-            /* Tạo gradient với 3 màu và kích thước lớn hơn màn hình */
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
-            
-            /* Hiệu ứng chuyển động */
             animation: gradientBG 15s ease infinite;
-            
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #333;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            perspective: 1000px; /* Cho hiệu ứng 3D */
         }
 
-        /* Định nghĩa chuyển động cho background */
         @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* Thanh điều hướng */
+        /* --- NAVBAR --- */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: var(--glass-border);
             z-index: 1000;
             padding: 15px 0;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        nav.nav-hidden {
+            transform: translateY(-100%);
         }
 
         nav .nav-container {
@@ -71,7 +126,8 @@
         nav .logo {
             font-size: 20px;
             font-weight: bold;
-            color: #667eea;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             text-decoration: none;
         }
 
@@ -83,38 +139,71 @@
 
         nav .nav-links a {
             text-decoration: none;
-            color: #555;
+            color: #fff;
             font-weight: 500;
             padding: 8px 16px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        nav .nav-links a:hover {
-            background-color: #667eea;
+        nav .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        nav .nav-links a:hover::after,
+        nav .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: none;
+            border: none;
             color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s;
+        }
+        .theme-toggle:hover {
+            transform: rotate(180deg);
         }
 
-        nav .nav-links a.active {
-            background-color: #667eea;
-            color: white;
-        }
-
-        /* Khung chứa nội dung chính */
+        /* --- MAIN CONTAINER (GLASSMORPHISM + 3D) --- */
         .container {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: var(--bg-light);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: var(--glass-border);
             width: 90%;
             max-width: 500px;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
             text-align: center;
-            transition: transform 0.3s ease;
-            margin-top: 80px; /* Khoảng cách từ nav */
+            margin-top: 80px;
+            
+            /* Initial state for animation */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            
+            /* 3D Transform settings */
+            transform-style: preserve-3d;
         }
 
-        .container:hover {
-            transform: translateY(-5px);
+        .container.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .avatar {
@@ -122,29 +211,35 @@
             height: 150px;
             object-fit: cover;
             border-radius: 50%;
-            border: 5px solid #fff;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            border: 5px solid rgba(255,255,255,0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .container:hover .avatar {
+            transform: scale(1.1) rotate(5deg);
         }
 
         h1 {
-            color: #2c3e50;
+            color: var(--text-dark);
             font-size: 24px;
             margin-bottom: 10px;
         }
 
         h2 {
-            color: #7f8c8d;
+            color: var(--primary-color);
             font-size: 16px;
-            font-weight: normal;
+            font-weight: 600;
             margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            min-height: 24px; /* Prevent layout shift */
         }
 
         p {
             line-height: 1.6;
-            color: #555;
+            color: var(--text-gray);
             margin-bottom: 30px;
         }
 
@@ -162,72 +257,98 @@
             font-weight: bold;
             transition: all 0.3s ease;
             display: inline-block;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-fb {
             background-color: #1877f2;
             color: white;
-            box-shadow: 0 4px 6px rgba(24, 119, 242, 0.3);
-        }
-
-        .btn-fb:hover {
-            background-color: #166fe5;
-            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
         }
 
         .btn-gh {
             background-color: #333;
             color: white;
-            box-shadow: 0 4px 6px rgba(51, 51, 51, 0.3);
+            box-shadow: 0 4px 15px rgba(51, 51, 51, 0.4);
         }
 
-        .btn-gh:hover {
-            background-color: #000;
-            transform: scale(1.05);
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
         }
 
         footer {
             margin-top: 30px;
             font-size: 12px;
-            color: #aaa;
+            color: var(--text-gray);
+            opacity: 0.7;
         }
 
-        /* Responsive cho mobile */
+        /* Responsive */
         @media (max-width: 768px) {
             nav .nav-container {
                 flex-direction: column;
                 gap: 10px;
             }
-            
             .container {
-                margin-top: 120px;
+                margin-top: 140px;
                 padding: 30px 20px;
+            }
+            /* Disable custom cursor on touch devices */
+            .cursor-dot, .cursor-outline {
+                display: none;
+            }
+            * {
+                cursor: auto;
             }
         }
     </style>
-    </style>
 </head>
-<body>
+<body data-theme="light">
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <!-- Thanh điều hướng -->
-    <nav>
+    <nav id="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">🏠 Trang chủ</a>
+            <a href="index.html" class="logo hover-target">🏠 Trang chủ</a>
             <div class="nav-links">
-                <a href="index.html" class="active">Trang cá nhân</a>
-                <a href="hello.html">Sở thích & Thành tựu</a>
-                <a href="schedule.html">Thời Khóa Biểu</a>
-                <a href="contact.html">Liên hệ</a>
+                <a href="index.html" class="active hover-target">Trang cá nhân</a>
+                <a href="hello.html" class="hover-target">Sở thích</a>
+                <a href="schedule.html" class="hover-target">Thời khóa biểu</a>
+                <a href="contact.html" class="hover-target">Liên hệ</a>
+                <button class="theme-toggle hover-target" id="theme-btn">🌙</button>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <img src="assets/images/avatar.jpg" alt="Ảnh đại diện Bùi Trung Đức" class="avatar" onerror="this.src='https://via.placeholder.com/150'">
+    <div class="container hover-target" id="tilt-card">
+        <img src="assets/images/avatar.jpg" alt="Ảnh đại diện Bùi Trung Đức" class="avatar" onerror="this.src='https://ui-avatars.com/api/?name=Bui+Trung+Duc&background=random&size=150'">
         
         <h1>Xin chào, mình là Bùi Trung Đức! 👋</h1>
         
-        <h2>Sinh viên năm nhất ngành CNTT</h2>
+        <!-- Typing effect will happen here -->
+        <h2 id="typing-text"></h2>
         
         <p>
             Mình vừa mới bắt đầu học lập trình và đây là trang web đầu tiên của mình. 
@@ -235,8 +356,8 @@
         </p>
         
         <div class="links">
-            <a href="https://facebook.com/@yukosheini" target="_blank" class="btn btn-fb">Facebook</a>
-            <a href="https://github.com/yukosheini" target="_blank" class="btn btn-gh">GitHub</a>
+            <a href="https://facebook.com/@yukosheini" target="_blank" class="btn btn-fb hover-target">Facebook</a>
+            <a href="https://github.com/yukosheini" target="_blank" class="btn btn-gh hover-target">GitHub</a>
         </div>
 
         <footer>
@@ -244,5 +365,120 @@
         </footer>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. CUSTOM CURSOR LOGIC ---
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            const hoverTargets = document.querySelectorAll('.hover-target');
+
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                // Dot follows instantly
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                // Outline follows with slight delay (animation in CSS helps, but JS updates pos)
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            // Add hover effect to interactive elements
+            hoverTargets.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+
+
+            // --- 2. ENTRANCE ANIMATION ---
+            const container = document.getElementById('tilt-card');
+            setTimeout(() => {
+                container.classList.add('visible');
+            }, 100);
+
+
+            // --- 3. TYPING EFFECT ---
+            const textElement = document.getElementById('typing-text');
+            const textToType = "Sinh viên năm nhất ngành CNTT";
+            let charIndex = 0;
+
+            function typeWriter() {
+                if (charIndex < textToType.length) {
+                    textElement.innerHTML += textToType.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 100); // Tốc độ gõ
+                } else {
+                    // Optional: Blinking cursor effect after typing finishes could be added here
+                }
+            }
+            // Start typing after entrance animation
+            setTimeout(typeWriter, 800);
+
+
+            // --- 4. SMART NAVBAR (Hide on scroll down, show on scroll up) ---
+            let lastScrollTop = 0;
+            const navbar = document.getElementById('navbar');
+
+            window.addEventListener('scroll', () => {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    // Scroll Down
+                    navbar.classList.add('nav-hidden');
+                } else {
+                    // Scroll Up
+                    navbar.classList.remove('nav-hidden');
+                }
+                lastScrollTop = scrollTop;
+            });
+
+
+            // --- 5. DARK MODE TOGGLE ---
+            const themeBtn = document.getElementById('theme-btn');
+            const body = document.body;
+            
+            // Check local storage
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme) {
+                body.setAttribute('data-theme', currentTheme);
+                themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            }
+
+            themeBtn.addEventListener('click', () => {
+                const isDark = body.getAttribute('data-theme') === 'dark';
+                const newTheme = isDark ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                themeBtn.textContent = isDark ? '🌙' : '☀️';
+                localStorage.setItem('theme', newTheme);
+            });
+
+
+            // --- 6. 3D TILT EFFECT FOR CARD ---
+            // Only active on desktop
+            if (window.matchMedia("(min-width: 769px)").matches) {
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Calculate rotation based on mouse position
+                    const xRotation = -((y - rect.height / 2) / 20); 
+                    const yRotation = (x - rect.width / 2) / 20;
+                    
+                    container.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) scale(1.02)`;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    container.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -6,102 +6,171 @@
     <meta name="description" content="Thời khóa biểu - Bài thực hành FIT4014">
     <meta name="author" content="Đức">
     
-    <link rel="icon" href="assets/images.jfif" type="image/x-icon">
+    <link rel="icon" href="assets/images.jfif" type="image/x-icon" onerror="this.href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>'">
     
     <title>Thời Khóa Biểu - Bùi Trung Đức</title>
 
     <style>
-        /* --- GIỮ NGUYÊN STYLE CŨ --- */
+        :root {
+            --primary-color: #667eea;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-main: #2c3e50;
+            --text-muted: #555;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+            --highlight-bg: #fff3cd;
+            --highlight-border: #ffeeba;
+            --active-pulse: rgba(255, 193, 7, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg-glass: rgba(30, 30, 40, 0.85);
+            --text-main: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --highlight-bg: #3d3d2a;
+            --highlight-border: #5c5c3d;
+            --active-pulse: rgba(255, 193, 7, 0.2);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            cursor: none; /* Custom cursor */
         }
 
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9999; pointer-events: none;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--primary-color); }
+        .cursor-outline {
+            width: 40px; height: 40px; border: 2px solid var(--primary-color);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        body.hovering .cursor-outline {
+            width: 60px; height: 60px; background-color: rgba(102, 126, 234, 0.1); border-color: transparent;
+        }
+
+        /* --- BACKGROUND --- */
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            color: var(--text-main);
             display: flex;
             justify-content: center;
-            align-items: center;
-            color: #333;
-            padding-top: 80px; /* Đẩy nội dung xuống dưới nav */
+            align-items: flex-start; /* Sửa lại để không bị lỗi cuộn */
+            padding-top: 100px;
+            padding-bottom: 40px;
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- NAVBAR --- */
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed; top: 0; left: 0; right: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: var(--glass-border);
             z-index: 1000;
             padding: 15px 0;
+            transition: transform 0.3s ease-in-out;
         }
+        nav.nav-hidden { transform: translateY(-100%); }
 
         nav .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            max-width: 1200px; margin: 0 auto; padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
         nav .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #667eea;
-            text-decoration: none;
+            font-size: 20px; font-weight: bold; color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2); text-decoration: none;
         }
-
-        nav .nav-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
+        nav .nav-links { display: flex; gap: 20px; align-items: center; }
         nav .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            text-decoration: none; color: #fff; font-weight: 500;
+            padding: 8px 16px; border-radius: 8px; transition: all 0.3s ease; position: relative;
         }
-
-        nav .nav-links a:hover, nav .nav-links a.active {
-            background-color: #667eea;
-            color: white;
+        nav .nav-links a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background-color: white; transition: width 0.3s ease;
         }
-
-        /* --- STYLE MỚI CHO TRANG THỜI KHÓA BIỂU --- */
+        nav .nav-links a:hover::after, nav .nav-links a.active::after { width: 100%; }
         
+        .theme-toggle {
+            background: none; border: none; color: white; font-size: 1.2rem;
+            cursor: pointer; padding: 5px; transition: transform 0.3s;
+        }
+        .theme-toggle:hover { transform: rotate(180deg); }
+
+        /* --- MAIN CONTAINER --- */
         .container-wide {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border: var(--glass-border);
             width: 95%;
-            max-width: 1000px; /* Rộng hơn trang cá nhân để chứa bảng */
+            max-width: 1100px;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
             text-align: center;
-            margin-bottom: 40px;
-            animation: fadeIn 0.5s ease-in-out;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            
+            /* 3D settings */
+            transform-style: preserve-3d;
+        }
+        
+        .container-wide.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         h1 {
-            color: #2c3e50;
+            color: var(--text-main);
             font-size: 28px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #667eea;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
             display: inline-block;
             padding-bottom: 10px;
         }
 
-        /* CSS cho Bảng */
+        /* Status Bar */
+        .status-bar {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin: 20px auto;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        #countdown {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Table Styles */
         .table-wrapper {
-            overflow-x: auto; /* Cho phép cuộn ngang trên điện thoại */
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
         table {
@@ -109,159 +178,187 @@
             border-collapse: collapse;
             margin: 20px 0;
             font-size: 15px;
-            min-width: 600px; /* Đảm bảo bảng không bị vỡ quá nhỏ */
+            min-width: 700px;
+            background: var(--bg-glass);
         }
 
         thead tr {
-            background-color: #667eea;
+            background-color: var(--primary-color);
             color: #ffffff;
             text-align: center;
         }
 
         th, td {
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(0,0,0,0.1);
+            vertical-align: middle;
         }
 
         /* Cột Tiết học */
         td:first-child {
             font-weight: bold;
-            background-color: #f3f4f6;
-            color: #667eea;
-            width: 10%;
+            background-color: rgba(102, 126, 234, 0.1);
+            color: var(--primary-color);
+            width: 12%;
+            font-size: 14px;
         }
 
-        /* Hiệu ứng hover dòng */
-        tbody tr:nth-of-type(even) {
-            background-color: #f9f9f9;
-        }
-
+        tbody tr:nth-of-type(even) { background-color: rgba(0,0,0,0.02); }
+        
+        /* Hover effect for rows */
         tbody tr:hover {
-            background-color: #eef2ff;
-            transform: scale(1.01);
-            transition: all 0.2s ease;
-            cursor: default;
+            background-color: rgba(102, 126, 234, 0.05);
+            transition: background-color 0.2s;
         }
 
-        /* Style riêng cho các môn học nổi bật */
         .subject-code {
             display: block;
-            font-size: 12px;
-            color: #888;
+            font-size: 11px;
+            color: var(--text-muted);
             margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Active Class Highlighting */
+        .current-class {
+            background-color: var(--highlight-bg) !important;
+            border: 2px solid var(--primary-color);
+            animation: pulseBorder 2s infinite;
+            position: relative;
+        }
+        
+        .current-class::after {
+            content: 'ĐANG HỌC';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        @keyframes pulseBorder {
+            0% { box-shadow: 0 0 0 0 var(--active-pulse); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
         }
 
         footer {
             margin-top: 30px;
             font-size: 12px;
-            color: #aaa;
+            color: var(--text-muted);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            nav .nav-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .container-wide {
-                width: 98%;
-                padding: 20px;
-            }
-            
-            th, td {
-                padding: 8px 5px;
-                font-size: 13px;
-            }
+            nav .nav-container { flex-direction: column; gap: 10px; }
+            .container-wide { width: 98%; padding: 20px; }
+            th, td { padding: 8px 5px; font-size: 12px; }
+            .cursor-dot, .cursor-outline { display: none; }
+            * { cursor: auto; }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <!-- Thanh điều hướng -->
-    <nav>
+    <nav id="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">🏠 Trang chủ</a>
+            <a href="index.html" class="logo hover-target">🏠 Trang chủ</a>
             <div class="nav-links">
-                <a href="index.html">Trang cá nhân</a>
-                <a href="hello.html">Sở thích & Thành tựu</a>
-                <a href="schedule.html" class="active">Thời Khóa Biểu</a> <!-- Link mới -->
-                <a href="contact.html">Liên hệ</a>
+                <a href="index.html" class="hover-target">Trang cá nhân</a>
+                <a href="hello.html" class="hover-target">Sở thích & Thành tựu</a>
+                <a href="schedule.html" class="active hover-target">Thời Khóa Biểu</a>
+                <a href="contact.html" class="hover-target">Liên hệ</a>
+                <button class="theme-toggle hover-target" id="theme-btn">🌙</button>
             </div>
         </div>
     </nav>
 
-    <div class="container-wide">
+    <div class="container-wide hover-target" id="tilt-card">
         <h1>⏰ Thời Khóa Biểu Tuần</h1>
         
+        <!-- Trạng thái thông minh -->
+        <div class="status-bar">
+            <span id="status-text">Đang tải lịch học...</span> 
+            <span id="countdown"></span>
+        </div>
+
         <div class="table-wrapper">
-            <table>
+            <table id="schedule-table">
                 <thead>
                     <tr>
-                        <th>Tiết</th>
-                        <th>Thứ 2</th>
-                        <th>Thứ 3</th>
-                        <th>Thứ 4</th>
-                        <th>Thứ 5</th>
-                        <th>Thứ 6</th>
-                        <th>Thứ 7</th>
+                        <th>Tiết / Giờ</th>
+                        <th data-day="2">Thứ 2</th>
+                        <th data-day="3">Thứ 3</th>
+                        <th data-day="4">Thứ 4</th>
+                        <th data-day="5">Thứ 5</th>
+                        <th data-day="6">Thứ 6</th>
+                        <th data-day="7">Thứ 7</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Tiết 1 -->
+                    <!-- Cấu trúc dữ liệu: data-start và data-end dùng 24h format -->
+                    
+                    <!-- Tiết 1: 07:00 - 08:00 -->
                     <tr>
                         <td>Tiết 1<br><span class="subject-code">07:00 - 08:00</span></td>
-                        <td>-<br><span class="subject-code"></span></td>
-                        <td>-</td>
-                        <td>Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
-                        <td>Kĩ năng mềm cơ bản <span class="subject-code">P405-KN-KNM</span></td>
-                        <td>Hệ thống máy tính <span class="subject-code">P302-CNTT-GD2</span></td>
-                        <td>Thiết kế web và triển khai hệ thống phần mềm <span class="subject-code">P801-Máy-GD1</span></td>
+                        <td data-day="2" data-start="07:00" data-end="08:00">-</td>
+                        <td data-day="3" data-start="07:00" data-end="08:00">-</td>
+                        <td data-day="4" data-start="07:00" data-end="08:00">Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
+                        <td data-day="5" data-start="07:00" data-end="08:00">Kĩ năng mềm <span class="subject-code">P405-KN</span></td>
+                        <td data-day="6" data-start="07:00" data-end="08:00">Hệ thống máy tính <span class="subject-code">P302-GD2</span></td>
+                        <td data-day="7" data-start="07:00" data-end="08:00">Thiết kế Web <span class="subject-code">P801-GD1</span></td>
                     </tr>
-                    <!-- Tiết 2 -->
+                    
+                    <!-- Tiết 2: 08:05 - 08:55 -->
                     <tr>
                         <td>Tiết 2<br><span class="subject-code">08:05 - 08:55</span></td>
-                        <td>-<br><span class="subject-code"></span></td>
-                        <td>-</td>
-                        <td>Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
-                        <td>Kĩ năng mềm cơ bản<span class="subject-code">P405-KN-KNM</span></td>
-                        <td>Hệ thống máy tính<span class="subject-code">P302-CNTT-GD2</span></td>
-                        <td>Thiết kế web và triển khai hệ thống phần mềm <span class="subject-code">P801-Máy-GD1</span></td>
+                        <td data-day="2" data-start="08:05" data-end="08:55">-</td>
+                        <td data-day="3" data-start="08:05" data-end="08:55">-</td>
+                        <td data-day="4" data-start="08:05" data-end="08:55">Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
+                        <td data-day="5" data-start="08:05" data-end="08:55">Kĩ năng mềm <span class="subject-code">P405-KN</span></td>
+                        <td data-day="6" data-start="08:05" data-end="08:55">Hệ thống máy tính <span class="subject-code">P302-GD2</span></td>
+                        <td data-day="7" data-start="08:05" data-end="08:55">Thiết kế Web <span class="subject-code">P801-GD1</span></td>
                     </tr>
-                    <!-- Tiết 3 -->
+
+                    <!-- Tiết 3: 09:10 - 10:00 -->
                     <tr>
                         <td>Tiết 3<br><span class="subject-code">09:10 - 10:00</span></td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
-                        <td>Kĩ năng mềm cơ bản <span class="subject-code">P405-KN-KNM</span></td>
-                        <td>Hệ thống máy tính <span class="subject-code">P302-CNTT-GD2</span>  </td>
-                        <td>Thiết kế web và triển khai hệ thống phần mềm <span class="subject-code">P801-Máy-GD1</span></td>
+                        <td data-day="2" data-start="09:10" data-end="10:00">-</td>
+                        <td data-day="3" data-start="09:10" data-end="10:00">-</td>
+                        <td data-day="4" data-start="09:10" data-end="10:00">Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
+                        <td data-day="5" data-start="09:10" data-end="10:00">Kĩ năng mềm <span class="subject-code">P405-KN</span></td>
+                        <td data-day="6" data-start="09:10" data-end="10:00">Hệ thống máy tính <span class="subject-code">P302-GD2</span></td>
+                        <td data-day="7" data-start="09:10" data-end="10:00">Thiết kế Web <span class="subject-code">P801-GD1</span></td>
                     </tr>
-                    <!-- Tiết 4 -->
+
+                    <!-- Tiết 4: 10:05 - 10:55 -->
                     <tr>
                         <td>Tiết 4<br><span class="subject-code">10:05 - 10:55</span></td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
-                        <td>Kĩ năng mềm cơ bản <span class="subject-code">P405-KN-KNM</span></td>
-                        <td>Hệ thống máy tính<span class="subject-code">P302-CNTT-GD2</span></td>
-                        <td>Thiết kế web và triển khai hệ thống phần mềm <span class="subject-code">P801-Máy-GD1</span></td>
+                        <td data-day="2" data-start="10:05" data-end="10:55">-</td>
+                        <td data-day="3" data-start="10:05" data-end="10:55">-</td>
+                        <td data-day="4" data-start="10:05" data-end="10:55">Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
+                        <td data-day="5" data-start="10:05" data-end="10:55">Kĩ năng mềm <span class="subject-code">P405-KN</span></td>
+                        <td data-day="6" data-start="10:05" data-end="10:55">Hệ thống máy tính <span class="subject-code">P302-GD2</span></td>
+                        <td data-day="7" data-start="10:05" data-end="10:55">Thiết kế Web <span class="subject-code">P801-GD1</span></td>
                     </tr>
-                    <!-- Tiết 5 -->
+
+                    <!-- Tiết 5: 11:00 - 11:40 -->
                     <tr>
                         <td>Tiết 5<br><span class="subject-code">11:00 - 11:40</span></td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
-                        <td>Kĩ năng mềm cơ bản <span class="subject-code">P405-KN-KNM</span></td>
-                        <td>Hệ thống máy tính <span class="subject-code">P302-CNTT-GD2</span>  </td>
-                        <td>Thiết kế web và triển khai hệ thống phần mềm <span class="subject-code">P801-Máy-GD1</span></td>
+                        <td data-day="2" data-start="11:00" data-end="11:40">-</td>
+                        <td data-day="3" data-start="11:00" data-end="11:40">-</td>
+                        <td data-day="4" data-start="11:00" data-end="11:40">Nhập môn CNTT <span class="subject-code">P305-KN</span></td>
+                        <td data-day="5" data-start="11:00" data-end="11:40">Kĩ năng mềm <span class="subject-code">P405-KN</span></td>
+                        <td data-day="6" data-start="11:00" data-end="11:40">Hệ thống máy tính <span class="subject-code">P302-GD2</span></td>
+                        <td data-day="7" data-start="11:00" data-end="11:40">Thiết kế Web <span class="subject-code">P801-GD1</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -272,5 +369,149 @@
         </footer>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. CUSTOM CURSOR & UI UTILS ---
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            const hoverTargets = document.querySelectorAll('.hover-target');
+
+            window.addEventListener('mousemove', (e) => {
+                cursorDot.style.left = `${e.clientX}px`;
+                cursorDot.style.top = `${e.clientY}px`;
+                cursorOutline.animate({ left: `${e.clientX}px`, top: `${e.clientY}px` }, { duration: 500, fill: "forwards" });
+            });
+
+            hoverTargets.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+
+            // Entrance Animation
+            setTimeout(() => document.getElementById('tilt-card').classList.add('visible'), 100);
+
+            // Navbar Scroll Logic
+            let lastScrollTop = 0;
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 100) navbar.classList.add('nav-hidden');
+                else navbar.classList.remove('nav-hidden');
+                lastScrollTop = scrollTop;
+            });
+
+            // Dark Mode
+            const themeBtn = document.getElementById('theme-btn');
+            const body = document.body;
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme) {
+                body.setAttribute('data-theme', currentTheme);
+                themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            }
+            themeBtn.addEventListener('click', () => {
+                const isDark = body.getAttribute('data-theme') === 'dark';
+                const newTheme = isDark ? 'light' : 'dark';
+                body.setAttribute('data-theme', newTheme);
+                themeBtn.textContent = isDark ? '🌙' : '☀️';
+                localStorage.setItem('theme', newTheme);
+            });
+
+
+            // --- 2. SMART SCHEDULE LOGIC ---
+            
+            function checkSchedule() {
+                const now = new Date();
+                const day = now.getDay(); // 0=CN, 1=T2... 7=CN (JS getDay trả về 0-6)
+                // Chuyển đổi JS Day (0-6) sang HTML Data Day (2-7, CN=1 hoặc 8 tùy quy ước, ở đây T2=2)
+                // HTML: T2=2, T3=3... T7=7. JS: T2=1, T3=2... T7=6, CN=0.
+                
+                let htmlDay = day === 0 ? 8 : day + 1; // Convert JS day to match HTML data-day
+                
+                const currentHour = now.getHours();
+                const currentMinute = now.getMinutes();
+                const currentTimeVal = currentHour * 60 + currentMinute; // Phút từ đầu ngày
+
+                let activeClassFound = false;
+                let nextClassTime = null;
+                let minDiff = Infinity;
+
+                // Reset highlights
+                document.querySelectorAll('td').forEach(td => td.classList.remove('current-class'));
+
+                // Duyệt qua tất cả các ô có chứa thông tin lịch học
+                const cells = document.querySelectorAll('td[data-day]');
+                
+                cells.forEach(cell => {
+                    const cellDay = parseInt(cell.getAttribute('data-day'));
+                    const startStr = cell.getAttribute('data-start');
+                    const endStr = cell.getAttribute('data-end');
+
+                    if (startStr && cellDay === htmlDay) {
+                        const [startH, startM] = startStr.split(':').map(Number);
+                        const [endH, endM] = endStr.split(':').map(Number);
+                        
+                        const startTimeVal = startH * 60 + startM;
+                        const endTimeVal = endH * 60 + endM;
+
+                        // Kiểm tra xem có đang trong giờ học không
+                        if (currentTimeVal >= startTimeVal && currentTimeVal < endTimeVal) {
+                            cell.classList.add('current-class');
+                            activeClassFound = true;
+                            
+                            // Cập nhật trạng thái
+                            document.getElementById('status-text').innerText = "🔴 Đang học: " + (cell.innerText.split('\n')[0] || "Tiết học");
+                            
+                            // Tính thời gian còn lại của tiết
+                            const remaining = endTimeVal - currentTimeVal;
+                            document.getElementById('countdown').innerText = `(Còn ${remaining} phút)`;
+                        }
+
+                        // Tìm tiết tiếp theo gần nhất
+                        if (startTimeVal > currentTimeVal) {
+                            const diff = startTimeVal - currentTimeVal;
+                            if (diff < minDiff) {
+                                minDiff = diff;
+                                nextClassTime = startTimeVal;
+                            }
+                        }
+                    }
+                });
+
+                // Nếu không có tiết nào đang học
+                if (!activeClassFound) {
+                    if (nextClassTime) {
+                        const diff = nextClassTime - currentTimeVal;
+                        document.getElementById('status-text').innerText = "⏳ Sắp đến giờ học";
+                        document.getElementById('countdown').innerText = `(trong ${diff} phút)`;
+                    } else {
+                        document.getElementById('status-text').innerText = "✅ Hôm nay không còn tiết học";
+                        document.getElementById('countdown').innerText = "";
+                    }
+                }
+            }
+
+            // Chạy ngay lập tức và cập nhật mỗi phút
+            checkSchedule();
+            setInterval(checkSchedule, 60000); // 60 giây cập nhật 1 lần
+
+
+            // --- 3. 3D TILT EFFECT ---
+            if (window.matchMedia("(min-width: 769px)").matches) {
+                const card = document.getElementById('tilt-card');
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const xRotation = -((y - rect.height / 2) / 30); 
+                    const yRotation = (x - rect.width / 2) / 30;
+                    card.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

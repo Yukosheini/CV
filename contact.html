@@ -6,35 +6,98 @@
     <meta name="description" content="Liên hệ - Bùi Trung Đức">
     <meta name="author" content="Đức">
     
-    <link rel="icon" href="assets/images.jfif" type="image/x-icon">
+    <link rel="icon" href="assets/images.jfif" type="image/x-icon" onerror="this.href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📞</text></svg>'">
     
     <title>Liên hệ | Bùi Trung Đức</title>
 
     <style>
+        /* --- CSS VARIABLES FOR THEMES --- */
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --text-main: #2c3e50;
+            --text-muted: #555;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --input-bg: rgba(255,255,255,0.8);
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --nav-scrolled: rgba(255, 255, 255, 0.98);
+            --item-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --bg-glass: rgba(30, 30, 40, 0.85); /* Nền card tối hơn */
+            --text-main: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --input-bg: rgba(0,0,0,0.2);
+            --nav-bg: rgba(30, 30, 40, 0.85);
+            --nav-scrolled: rgba(30, 30, 40, 0.98);
+            --item-bg: rgba(255, 255, 255, 0.05);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            cursor: none; 
         }
 
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--primary-color); }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 2px solid var(--primary-color);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        body.hovering .cursor-outline {
+            width: 60px; height: 60px;
+            background-color: rgba(102, 126, 234, 0.2);
+            border-color: transparent;
+        }
+
+        /* --- BACKGROUND ANIMATED --- */
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* Gradient nền động */
+            background: linear-gradient(-45deg, #667eea, #764ba2, #a18cd1, #fbc2eb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-            color: #333;
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: color 0.3s ease;
         }
 
-        /* Thanh điều hướng */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- NAVBAR --- */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.95);
+            top: 0; left: 0; right: 0;
+            background-color: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             padding: 15px 0;
+            transition: transform 0.3s ease-in-out, padding 0.3s ease, background-color 0.3s;
         }
+        
+        nav.nav-hidden { transform: translateY(-100%); }
+        nav.scrolled { padding: 10px 0; background-color: var(--nav-scrolled); }
 
         nav .nav-container {
             max-width: 1200px;
@@ -48,8 +111,9 @@
         nav .logo {
             font-size: 20px;
             font-weight: bold;
-            color: #667eea;
+            color: var(--primary-color);
             text-decoration: none;
+            transition: color 0.3s;
         }
 
         nav .nav-links {
@@ -60,34 +124,63 @@
 
         nav .nav-links a {
             text-decoration: none;
-            color: #555;
+            color: var(--text-main); /* Đổi màu theo theme */
             font-weight: 500;
             padding: 8px 16px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
-        nav .nav-links a:hover {
-            background-color: #667eea;
-            color: white;
+        nav .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 5px; left: 50%;
+            width: 0; height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease, left 0.3s ease;
         }
 
+        nav .nav-links a:hover::after,
+        nav .nav-links a.active::after { 
+            width: calc(100% - 32px); 
+            left: 16px;
+        }
+
+        nav .nav-links a:hover,
         nav .nav-links a.active {
-            background-color: #667eea;
-            color: white;
+            color: var(--primary-color);
         }
 
-        /* Nội dung chính */
+        /* Nút đổi Theme */
+        .theme-toggle {
+            background: none; border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            cursor: pointer; /* Giữ nguyên vì đã có custom cursor */
+            padding: 5px;
+            transition: transform 0.3s;
+        }
+        .theme-toggle:hover { transform: rotate(180deg); }
+
+        /* --- MAIN CONTENT --- */
         main {
             max-width: 900px;
             margin: 0 auto;
-            padding: 100px 20px 40px;
+            padding: 120px 20px 40px;
         }
 
         .page-title {
             text-align: center;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: fadeInDown 0.8s ease forwards;
+        }
+
+        @keyframes fadeInDown {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .page-title h1 {
@@ -96,34 +189,41 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .page-title p {
-            font-size: 18px;
-            opacity: 0.9;
-        }
+        .page-title p { font-size: 18px; opacity: 0.9; }
 
-        /* Card liên hệ */
-        .contact-card {
-            background: rgba(255, 255, 255, 0.95);
+        /* --- CARDS & GLASSMORPHISM --- */
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
             margin-bottom: 30px;
+            
+            /* Scroll Animation Initial State */
+            opacity: 0;
+            transform: translateY(40px);
+            transition: transform 0.1s ease, opacity 0.6s ease, transform 0.6s ease, background-color 0.3s;
         }
 
-        .contact-card h2 {
-            color: #667eea;
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
             text-align: center;
             margin-bottom: 10px;
             font-size: 28px;
         }
 
-        .contact-card .subtitle {
+        .card .subtitle {
             text-align: center;
-            color: #7f8c8d;
+            color: var(--text-muted);
             margin-bottom: 30px;
         }
 
-        /* Avatar trong trang liên hệ */
         .contact-avatar {
             width: 120px;
             height: 120px;
@@ -133,25 +233,12 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
             display: block;
             margin: 0 auto 20px;
+            transition: transform 0.3s;
         }
+        
+        .contact-avatar:hover { transform: scale(1.05) rotate(5deg); }
 
-        .contact-name {
-            text-align: center;
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-
-        .contact-role {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Danh sách phương thức liên hệ */
+        /* Contact Methods Grid */
         .contact-methods {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -164,38 +251,23 @@
             align-items: center;
             gap: 15px;
             padding: 20px;
-            background: #f8f9fa;
+            background: var(--item-bg);
             border-radius: 12px;
             text-decoration: none;
-            color: #333;
+            color: var(--text-main);
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
         }
 
         .contact-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .contact-item.phone:hover {
-            border-left-color: #27ae60;
-            background: #e8f8f0;
-        }
-
-        .contact-item.zalo:hover {
-            border-left-color: #0068ff;
-            background: #e6f0ff;
-        }
-
-        .contact-item.facebook:hover {
-            border-left-color: #1877f2;
-            background: #e6f0ff;
-        }
-
-        .contact-item.github:hover {
-            border-left-color: #333;
-            background: #f0f0f0;
-        }
+        .contact-item.phone:hover { border-left-color: #27ae60; }
+        .contact-item.zalo:hover { border-left-color: #0068ff; }
+        .contact-item.facebook:hover { border-left-color: #1877f2; }
+        .contact-item.github:hover { border-left-color: #333; }
 
         .contact-icon {
             font-size: 32px;
@@ -204,37 +276,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
+            background: white; /* Icon luôn nền trắng để nổi */
             border-radius: 50%;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             flex-shrink: 0;
         }
 
-        .contact-info {
-            flex: 1;
-        }
+        .contact-info { flex: 1; }
+        .contact-info .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .contact-info .value { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .contact-info .hint { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-        .contact-info .label {
-            font-size: 12px;
-            color: #7f8c8d;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 3px;
-        }
-
-        .contact-info .value {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .contact-info .hint {
-            font-size: 12px;
-            color: #95a5a6;
-            margin-top: 2px;
-        }
-
-        /* Nút hành động lớn */
+        /* Buttons */
         .action-buttons {
             display: flex;
             gap: 15px;
@@ -254,61 +307,20 @@
             align-items: center;
             gap: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border: none;
+            cursor: pointer;
         }
 
-        .btn-call {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-            color: white;
-        }
+        .btn-call { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; }
+        .btn-zalo { background: linear-gradient(135deg, #0068ff 0%, #0099ff 100%); color: white; }
 
-        .btn-call:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
-        }
+        .btn-action:hover { transform: translateY(-3px); filter: brightness(1.1); }
 
-        .btn-zalo {
-            background: linear-gradient(135deg, #0068ff 0%, #0099ff 100%);
-            color: white;
-        }
-
-        .btn-zalo:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 104, 255, 0.4);
-        }
-
-        /* Form liên hệ */
-        .contact-form-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .contact-form-card h2 {
-            color: #667eea;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .contact-form-card .subtitle {
-            text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
+        /* Form Styles */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 500; }
+        
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
@@ -316,18 +328,17 @@
             font-size: 14px;
             font-family: inherit;
             transition: border-color 0.3s ease;
+            background: var(--input-bg);
+            color: var(--text-main);
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group input:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary-color);
+            background: rgba(255,255,255,0.95);
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
+        .form-group textarea { resize: vertical; min-height: 120px; }
 
         .btn-submit {
             width: 100%;
@@ -342,30 +353,24 @@
             transition: all 0.3s ease;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
-        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4); }
 
-        /* Thời gian phản hồi */
-        .response-time {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-top: 20px;
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px; right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .response-time .icon {
-            font-size: 24px;
-        }
-
-        .response-time .text {
-            color: #856404;
-            font-size: 14px;
+            gap: 15px;
+            min-width: 300px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-left: 5px solid #27ae60;
         }
 
         /* Footer */
@@ -379,49 +384,38 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            nav .nav-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .page-title h1 {
-                font-size: 28px;
-            }
-
-            .contact-card, .contact-form-card {
-                padding: 25px;
-            }
-
-            .contact-methods {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .btn-action {
-                width: 100%;
-                justify-content: center;
-            }
+            nav .nav-container { flex-direction: column; gap: 10px; }
+            .page-title h1 { font-size: 28px; }
+            .card { padding: 25px; }
+            .contact-methods { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; }
+            .btn-action { width: 100%; justify-content: center; }
+            
+            .cursor-dot, .cursor-outline { display: none; }
+            * { cursor: auto; }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-        <!-- Thanh điều hướng (Đã cập nhật cho index.html) -->
-    <nav>
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Thanh điều hướng -->
+    <nav id="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">🏠 Trang chủ</a>
+            <a href="index.html" class="logo hover-target">🏠 Trang chủ</a>
             <div class="nav-links">
-                <a href="index.html" >Trang cá nhân</a>
-                <a href="hello.html">Sở thích & Thành tựu</a>
-                <a href="schedule.html">Thời Khóa Biểu</a> <!-- Đã thêm link này -->
-                <a href="contact.html" class="active">Liên hệ</a>
+                <a href="index.html" class="hover-target">Trang cá nhân</a>
+                <a href="hello.html" class="hover-target">Sở thích & Thành tựu</a>
+                <a href="schedule.html" class="hover-target">Thời Khóa Biểu</a>
+                <a href="contact.html" class="active hover-target">Liên hệ</a>
+                <!-- Nút đổi Theme -->
+                <button class="theme-toggle hover-target" id="theme-btn">🌙</button>
             </div>
         </div>
     </nav>
-
 
     <main>
         <div class="page-title">
@@ -430,7 +424,7 @@
         </div>
 
         <!-- Card thông tin liên hệ -->
-        <div class="contact-card">
+        <div class="card contact-card hover-target">
             <img src="assets/images/avatar.jpg" alt="Bùi Trung Đức" class="contact-avatar" onerror="this.src='https://via.placeholder.com/120'">
             
             <h2>Bùi Trung Đức</h2>
@@ -439,7 +433,7 @@
             <!-- Các phương thức liên hệ -->
             <div class="contact-methods">
                 <!-- Số điện thoại -->
-                <a href="tel:0393590341" class="contact-item phone">
+                <a href="tel:0393590341" class="contact-item phone hover-target">
                     <div class="contact-icon">📱</div>
                     <div class="contact-info">
                         <div class="label">Số điện thoại</div>
@@ -449,7 +443,7 @@
                 </a>
 
                 <!-- Zalo -->
-                <a href="https://zalo.me/0393590341" target="_blank" class="contact-item zalo">
+                <a href="https://zalo.me/0393590341" target="_blank" class="contact-item zalo hover-target">
                     <div class="contact-icon">💬</div>
                     <div class="contact-info">
                         <div class="label">Zalo</div>
@@ -459,7 +453,7 @@
                 </a>
 
                 <!-- Facebook -->
-                <a href="https://facebook.com/@yukosheini" target="_blank" class="contact-item facebook">
+                <a href="https://facebook.com/@yukosheini" target="_blank" class="contact-item facebook hover-target">
                     <div class="contact-icon">👤</div>
                     <div class="contact-info">
                         <div class="label">Facebook</div>
@@ -469,7 +463,7 @@
                 </a>
 
                 <!-- GitHub -->
-                <a href="https://github.com/yukosheini" target="_blank" class="contact-item github">
+                <a href="https://github.com/yukosheini" target="_blank" class="contact-item github hover-target">
                     <div class="contact-icon">💻</div>
                     <div class="contact-info">
                         <div class="label">GitHub</div>
@@ -481,29 +475,29 @@
 
             <!-- Nút hành động lớn -->
             <div class="action-buttons">
-                <a href="tel:0393590341" class="btn-action btn-call">
+                <a href="tel:0393590341" class="btn-action btn-call hover-target">
                     📞 Gọi điện ngay
                 </a>
-                <a href="https://zalo.me/0393590341" target="_blank" class="btn-action btn-zalo">
+                <a href="https://zalo.me/0393590341" target="_blank" class="btn-action btn-zalo hover-target">
                     💬 Nhắn tin Zalo
                 </a>
             </div>
 
             <!-- Thời gian phản hồi -->
-            <div class="response-time">
-                <div class="icon">⏰</div>
-                <div class="text">
+            <div class="response-time" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px 20px; border-radius: 8px; margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+                <div class="icon" style="font-size: 24px;">⏰</div>
+                <div class="text" style="color: #856404; font-size: 14px;">
                     <strong>Thời gian phản hồi:</strong> Mình thường trả lời trong vòng 2-4 giờ vào giờ hành chính (8:00 - 22:00).
                 </div>
             </div>
         </div>
 
         <!-- Form liên hệ -->
-        <div class="contact-form-card">
+        <div class="card contact-form-card hover-target">
             <h2>✉️ Gửi lời nhắn</h2>
             <p class="subtitle">Để lại lời nhắn và mình sẽ phản hồi sớm nhất có thể</p>
 
-            <form onsubmit="handleSubmit(event)">
+            <form id="contactForm">
                 <div class="form-group">
                     <label for="name">Họ và tên *</label>
                     <input type="text" id="name" name="name" placeholder="Nhập họ tên của bạn" required>
@@ -524,7 +518,7 @@
                     <textarea id="message" name="message" placeholder="Viết lời nhắn của bạn ở đây..." required></textarea>
                 </div>
 
-                <button type="submit" class="btn-submit">Gửi lời nhắn 🚀</button>
+                <button type="submit" class="btn-submit hover-target">Gửi lời nhắn 🚀</button>
             </form>
         </div>
     </main>
@@ -534,11 +528,164 @@
     </footer>
 
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            alert('Cảm ơn bạn đã gửi lời nhắn! Mình sẽ phản hồi sớm nhất có thể. 😊');
-            event.target.reset();
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. THEME TOGGLE LOGIC (NEW) ---
+            const themeBtn = document.getElementById('theme-btn');
+            const body = document.body;
+            
+            // Kiểm tra localStorage hoặc mặc định là light
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            body.setAttribute('data-theme', currentTheme);
+            themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+            themeBtn.addEventListener('click', () => {
+                const isDark = body.getAttribute('data-theme') === 'dark';
+                const newTheme = isDark ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                themeBtn.textContent = isDark ? '🌙' : '☀️';
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // --- 2. CUSTOM CURSOR LOGIC ---
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            const hoverTargets = document.querySelectorAll('.hover-target');
+
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            hoverTargets.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+
+            // --- 3. SMART NAVBAR ---
+            let lastScrollTop = 0;
+            const navbar = document.getElementById('navbar');
+
+            window.addEventListener('scroll', () => {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    navbar.classList.add('nav-hidden');
+                } else {
+                    navbar.classList.remove('nav-hidden');
+                }
+                lastScrollTop = scrollTop;
+            });
+
+            // --- 4. SCROLL REVEAL ANIMATION ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // --- 5. 3D TILT EFFECT ---
+            if (window.matchMedia("(min-width: 769px)").matches) {
+                document.querySelectorAll('.card').forEach(card => {
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const xRotation = -((y - rect.height / 2) / 25); 
+                        const yRotation = (x - rect.width / 2) / 25;
+                        
+                        card.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) scale(1.01)`;
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                    });
+                });
+            }
+
+            // --- 6. COPY NUMBER & FORM HANDLING ---
+            
+            const phoneItem = document.querySelector('.contact-item.phone');
+            if(phoneItem && window.innerWidth > 768) {
+                phoneItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const number = "0393590341";
+                    navigator.clipboard.writeText(number).then(() => {
+                        showToast('success', 'Đã sao chép!', `Số điện thoại ${number} đã được lưu.`);
+                    });
+                });
+                const hint = phoneItem.querySelector('.hint');
+                if(hint) hint.textContent = "Nhấn để sao chép số";
+            }
+
+            const form = document.getElementById('contactForm');
+            const submitBtn = document.querySelector('.btn-submit');
+            const originalBtnText = submitBtn.innerHTML;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Đang gửi... ⏳';
+                submitBtn.style.opacity = "0.7";
+
+                setTimeout(() => {
+                    form.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.style.opacity = "1";
+                    
+                    showToast('success', 'Gửi thành công!', 'Cảm ơn bạn, mình sẽ phản hồi sớm nhất.');
+                }, 2000);
+            });
+
+            function showToast(type, title, message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `
+                    <div style="font-size: 24px;">${type === 'success' ? '✅' : 'ℹ️'}</div>
+                    <div>
+                        <h4 style="margin: 0; color: #333; font-size: 16px;">${title}</h4>
+                        <p style="margin: 5px 0 0; color: #666; font-size: 14px;">${message}</p>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.style.transform = "translateX(0)", 100);
+                setTimeout(() => {
+                    toast.style.transform = "translateX(120%)";
+                    setTimeout(() => document.body.removeChild(toast), 400);
+                }, 4000);
+            }
+        });
     </script>
 
 </body>
