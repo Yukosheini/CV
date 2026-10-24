@@ -74,6 +74,27 @@
             border-color: transparent;
         }
 
+        /* --- SNOWFLAKE EFFECT --- */
+        .snowflake {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            animation: snowfall linear forwards;
+            user-select: none;
+        }
+
+        @keyframes snowfall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(150px) rotate(360deg) scale(0.5);
+            }
+        }
+
         /* --- BACKGROUND ĐỘNG --- */
         body {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -395,14 +416,84 @@
             });
 
 
-            // --- 2. ENTRANCE ANIMATION ---
+            // --- 2. SNOWFLAKE EFFECT ON HOVER LINKS ---
+            const snowflakes = ['❄', '❅', '❆', '✦', '✧', '⭐', '✨'];
+            let snowflakeInterval;
+
+            function createSnowflake(x, y) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.textContent = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+                
+                // Random size between 10px and 20px
+                const size = Math.random() * 10 + 10;
+                snowflake.style.fontSize = `${size}px`;
+                
+                // Set initial position
+                snowflake.style.left = `${x}px`;
+                snowflake.style.top = `${y}px`;
+                
+                // Random horizontal drift
+                const drift = (Math.random() - 0.5) * 100;
+                snowflake.style.setProperty('--drift', `${drift}px`);
+                
+                // Random animation duration between 1s and 2s
+                const duration = Math.random() * 1 + 1;
+                snowflake.style.animationDuration = `${duration}s`;
+                
+                // Random color (white or light blue)
+                const colors = ['#ffffff', '#e0f7ff', '#b3e5fc', '#81d4fa'];
+                snowflake.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(snowflake);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    if (snowflake.parentNode) {
+                        snowflake.remove();
+                    }
+                }, duration * 1000);
+            }
+
+            function startSnowfall(element) {
+                const rect = element.getBoundingClientRect();
+                
+                // Create snowflakes at intervals
+                snowflakeInterval = setInterval(() => {
+                    const x = rect.left + Math.random() * rect.width;
+                    const y = rect.top + Math.random() * 10;
+                    createSnowflake(x, y);
+                }, 100); // Create a new snowflake every 100ms
+            }
+
+            function stopSnowfall() {
+                if (snowflakeInterval) {
+                    clearInterval(snowflakeInterval);
+                    snowflakeInterval = null;
+                }
+            }
+
+            // Add snowfall effect to all <a> tags
+            const allLinks = document.querySelectorAll('a');
+            allLinks.forEach(link => {
+                link.addEventListener('mouseenter', (e) => {
+                    startSnowfall(link);
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    stopSnowfall();
+                });
+            });
+
+
+            // --- 3. ENTRANCE ANIMATION ---
             const container = document.getElementById('tilt-card');
             setTimeout(() => {
                 container.classList.add('visible');
             }, 100);
 
 
-            // --- 3. TYPING EFFECT ---
+            // --- 4. TYPING EFFECT ---
             const textElement = document.getElementById('typing-text');
             const textToType = "Sinh viên năm nhất ngành CNTT";
             let charIndex = 0;
@@ -420,7 +511,7 @@
             setTimeout(typeWriter, 800);
 
 
-            // --- 4. SMART NAVBAR (Hide on scroll down, show on scroll up) ---
+            // --- 5. SMART NAVBAR (Hide on scroll down, show on scroll up) ---
             let lastScrollTop = 0;
             const navbar = document.getElementById('navbar');
 
@@ -438,7 +529,7 @@
             });
 
 
-            // --- 5. DARK MODE TOGGLE ---
+            // --- 6. DARK MODE TOGGLE ---
             const themeBtn = document.getElementById('theme-btn');
             const body = document.body;
             
@@ -459,7 +550,7 @@
             });
 
 
-            // --- 6. 3D TILT EFFECT FOR CARD ---
+            // --- 7. 3D TILT EFFECT FOR CARD ---
             // Only active on desktop
             if (window.matchMedia("(min-width: 769px)").matches) {
                 container.addEventListener('mousemove', (e) => {
